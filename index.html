@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jornada Rank S - Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px; /* Mantém o layout limpo e centralizado */
+        }
+        /* Topo: Barra de Progresso e Patente */
+        .header {
+            background-color: #1e1e1e;
+            padding: 35px 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .rank-title {
+            margin: 0 0 20px 0;
+            color: #bb86fc; /* Roxo vibrante para destaque do nível */
+            font-size: 32px;
+            font-weight: bold;
+        }
+        .progress-container {
+            background-color: #333333;
+            border-radius: 12px;
+            height: 24px;
+            width: 100%;
+            margin-bottom: 12px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .progress-bar {
+            background-color: #03dac6; /* Ciano para a barra de XP */
+            height: 100%;
+            width: 42%; /* Exemplo: 1501 de 3500 */
+            border-radius: 12px;
+            transition: width 0.5s ease;
+        }
+        .xp-text {
+            font-size: 16px;
+            color: #b3b3b3;
+            font-weight: 500;
+        }
+        /* Corpo: Cartões de Missão */
+        .mission-card {
+            background-color: #1e1e1e;
+            padding: 20px 25px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .mission-info h3 {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            color: #ffffff;
+        }
+        .mission-info p {
+            margin: 0;
+            color: #b3b3b3;
+            font-size: 14px;
+        }
+        .action-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .xp-reward {
+            color: #03dac6;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .check-btn {
+            background-color: transparent;
+            border: 2px solid #bb86fc;
+            color: #bb86fc;
+            padding: 10px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        .check-btn:hover {
+            background-color: #bb86fc;
+            color: #121212;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="rank-title">Rank C: Praticante</h1>
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+            <div class="xp-text">1.501 / 3.500 XP</div>
+        </div>
+
+        <div class="mission-card">
+            <div class="mission-info">
+                <h3>Despertar de Elite</h3>
+                <p>Acordar pontualmente às 04:40 AM</p>
+            </div>
+            <div class="action-area">
+                <span class="xp-reward">+100 XP</span>
+                <button class="check-btn">Feito</button>
+            </div>
+        </div>
+
+        <div class="mission-card">
+            <div class="mission-info">
+                <h3>Circuito de Ferro</h3>
+                <p>Concluir o circuito planejado de exercícios físicos</p>
+            </div>
+            <div class="action-area">
+                <span class="xp-reward">+150 XP</span>
+                <button class="check-btn">Feito</button>
+            </div>
+        </div>
+
+        <div class="mission-card">
+            <div class="mission-info">
+                <h3>Nutrição Perfeita</h3>
+                <p>Registrar e cumprir as metas das marmitas</p>
+            </div>
+            <div class="action-area">
+                <span class="xp-reward">+50 XP</span>
+                <button class="check-btn">Feito</button>
+            </div>
+        </div>
+    </div>
+<script>
+        // 1. Memória do Navegador: Busca o XP salvo ou, se for a primeira vez, começa em 1501
+        let xpAtual = localStorage.getItem('meuXpRankS');
+        
+        // Se não tiver nada salvo, define como 1501
+        if (xpAtual === null) {
+            xpAtual = 1501;
+        } else {
+            // Converte o texto salvo para número
+            xpAtual = parseInt(xpAtual);
+        }
+        
+        const xpMaximo = 3500; // Alvo para o Rank B
+
+        // 2. Mapeamento dos elementos da tela
+        const textoXp = document.querySelector('.xp-text');
+        const barraProgresso = document.querySelector('.progress-bar');
+        const botoes = document.querySelectorAll('.check-btn');
+
+        // Função isolada para desenhar a barra corretamente
+        function atualizarPainel() {
+            let porcentagem = (xpAtual / xpMaximo) * 100;
+            if (porcentagem > 100) porcentagem = 100; // Trava visualmente no 100%
+            
+            textoXp.innerText = `${xpAtual.toLocaleString('pt-BR')} / ${xpMaximo.toLocaleString('pt-BR')} XP`;
+            barraProgresso.style.width = `${porcentagem}%`;
+        }
+
+        // Chama a função assim que a página carrega para mostrar o XP salvo
+        atualizarPainel();
+
+        // 3. Adiciona a função de clique em todos os botões
+        botoes.forEach(botao => {
+            botao.addEventListener('click', function() {
+                if (this.disabled) return;
+
+                const areaAcao = this.parentElement;
+                const textoRecompensa = areaAcao.querySelector('.xp-reward').innerText;
+                const valorXp = parseInt(textoRecompensa.replace(/\D/g, ''));
+
+                // Soma o XP e SALVA no Local Storage imediatamente
+                xpAtual += valorXp;
+                localStorage.setItem('meuXpRankS', xpAtual);
+
+                // Atualiza o painel visual
+                atualizarPainel();
+
+                // Transforma o botão visualmente
+                this.innerText = 'Concluído';
+                this.style.backgroundColor = '#bb86fc';
+                this.style.color = '#121212';
+                this.disabled = true;
+                this.style.cursor = 'default';
+            });
+        });
+    </script>
+</body>
+</html>
